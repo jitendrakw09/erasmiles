@@ -2,8 +2,13 @@ import ActivityOverview from "@/components/dashboard/ActivityOverview";
 import MainActions from "@/components/dashboard/MainActions";
 import WelcomeSection from "@/components/dashboard/WelcomeSection";
 import Navbar from "@/components/Navbar";
+import { syncUser } from "@/lib/actions/users";
 
-function DashboardPage() {
+export const dynamic = "force-dynamic";
+
+async function DashboardPage() {
+  await syncUser();
+
   return (
     <>
       <Navbar />
