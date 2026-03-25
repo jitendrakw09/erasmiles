@@ -26,26 +26,49 @@ Highlights:
 
 ## 🧪 .env Setup
 
+1. Copy `.env.example` to `.env.local` for local development.
+2. For production, add the same keys in your hosting provider environment settings.
+3. Use production values in production (for example `pk_live_...`, `sk_live_...`).
+
 ```bash
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
+NODE_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-DATABASE_URL=your_postgres_database_url
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-NEXT_PUBLIC_VAPI_ASSISTANT_ID=your_vapi_assistant_id
-NEXT_PUBLIC_VAPI_API_KEY=your_vapi_api_key
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DB_NAME?schema=public
 
-ADMIN_EMAIL=your_admin_email
+NEXT_PUBLIC_VAPI_ASSISTANT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+NEXT_PUBLIC_VAPI_API_KEY=public_key_xxxxxxxxxxxxxxxxxxxxx
 
-RESEND_API_KEY=your_resend_api_key
+ADMIN_EMAIL=admin@example.com
 
-NEXT_PUBLIC_APP_URL=your_app_url
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
+```
+
+## 🚀 Deploy (Vercel)
+
+1. Push your code to GitHub.
+2. Import the repository into Vercel.
+3. Add all environment variables from `.env.example` in Vercel Project Settings -> Environment Variables.
+4. Set `NEXT_PUBLIC_APP_URL` to your deployed domain (for example `https://your-app.vercel.app`).
+5. Ensure your PostgreSQL database is reachable from Vercel.
+6. Deploy.
+
+## ✅ Pre-Deploy Check
+
+Run this locally before deploying:
+
+```bash
+npm install
+npm run build
 
 ```
 
 ## Run the app
 
 ```bash
-1- npm install
-2- npm run dev
+npm install
+npm run dev
 ```
