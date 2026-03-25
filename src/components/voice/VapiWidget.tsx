@@ -1,6 +1,6 @@
 "use client";
 
-import { vapi } from "@/lib/vapi";
+import { createVapiClient } from "@/lib/vapi";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "../ui/card";
@@ -13,9 +13,15 @@ function VapiWidget() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const [callEnded, setCallEnded] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
 
   const { user, isLoaded } = useUser();
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const vapiRef = useRef<ReturnType<typeof createVapiClient>>(null);
+
+  useEffect(() => {
+    vapiRef.current = createVapiClient();
+  }, []);
 
   // auto-scroll for messages
   useEffect(() => {
@@ -26,6 +32,9 @@ function VapiWidget() {
 
   // setup event listeners for VAPI
   useEffect(() => {
+    const vapi = vapiRef.current;
+    if (!vapi) return;
+
     const handleCallStart = () => {
       console.log("Call started");
       setConnecting(false);
@@ -85,16 +94,33 @@ function VapiWidget() {
   }, []);
 
   const toggleCall = async () => {
+    const vapi = vapiRef.current;
+
+    if (!vapi) {
+      setVoiceError("Voice assistant is not configured. Please set NEXT_PUBLIC_VAPI_API_KEY.");
+      return;
+    }
+
     if (callActive) vapi.stop();
     else {
       try {
+        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+        if (!assistantId) {
+          setVoiceError(
+            "Voice assistant is missing NEXT_PUBLIC_VAPI_ASSISTANT_ID in environment settings.",
+          );
+          return;
+        }
+
+        setVoiceError(null);
         setConnecting(true);
         setMessages([]);
         setCallEnded(false);
 
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID);
+        await vapi.start(assistantId);
       } catch (error) {
         console.log("Failed to start call", error);
+        setVoiceError("Unable to start call right now. Please try again.");
         setConnecting(false);
       }
     }
@@ -199,7 +225,7 @@ function VapiWidget() {
             {/* User Image */}
             <div className="relative size-32 mb-4">
               <Image
-                src={user?.imageUrl!}
+                src={user?.imageUrl || "/logo.png"}
                 alt="User"
                 width={128}
                 height={128}
@@ -275,6 +301,8 @@ function VapiWidget() {
           </span>
         </Button>
       </div>
+
+      {voiceError && <p className="mt-4 text-center text-sm text-destructive">{voiceError}</p>}
     </div>
   );
 }
