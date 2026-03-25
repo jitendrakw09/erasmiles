@@ -47,14 +47,34 @@ ADMIN_EMAIL=admin@example.com
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
 ```
 
-## 🚀 Deploy (Vercel)
+## 🚀 Deploy (Render)
+
+If you are deploying this on Render, this is the easiest order to do things:
+
+1. Create a new **Web Service** from this GitHub repo.
+2. Build command: `npm install && npm run build`
+3. Start command: `npm run start`
+4. Add all variables from `.env.example` in Render -> Environment.
+5. Set `NEXT_PUBLIC_APP_URL` to your real Render URL (example: `https://erasmiles.onrender.com`).
+6. Use a PostgreSQL connection string with SSL, for example:
+   `postgresql://USER:PASSWORD@HOST:5432/DB_NAME?schema=public&sslmode=require`
+7. Save and deploy.
+
+After first deploy, run Prisma schema sync once against production DB:
+
+```bash
+npx prisma db push
+```
+
+If login or email fails after deploy, first check Clerk keys and Resend key in Render env settings before touching code.
+
+## Alternate: Vercel
 
 1. Push your code to GitHub.
 2. Import the repository into Vercel.
 3. Add all environment variables from `.env.example` in Vercel Project Settings -> Environment Variables.
-4. Set `NEXT_PUBLIC_APP_URL` to your deployed domain (for example `https://your-app.vercel.app`).
-5. Ensure your PostgreSQL database is reachable from Vercel.
-6. Deploy.
+4. Set `NEXT_PUBLIC_APP_URL` to your deployed domain.
+5. Deploy.
 
 ## ✅ Pre-Deploy Check
 
