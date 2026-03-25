@@ -90,5 +90,12 @@ npm run build
 
 ```bash
 npm install
+npm run db:seed
 npm run dev
+```
+
+If doctors exist but are all inactive, activate them:
+
+```bash
+npm run db:activate-doctors
 ```
